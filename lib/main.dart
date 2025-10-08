@@ -32,6 +32,14 @@ void main() {
           hasil = kalkulator.kali(angka1, angka2);
           print('Hasil: $angka1 × $angka2 = $hasil');
           break;
+          case 4:
+          if (angka2 == 0) {
+            print('Error: Tidak dapat membagi dengan nol!');
+            continue;
+          }
+          hasil = kalkulator.bagi(angka1, angka2);
+          print('Hasil: $angka1 ÷ $angka2 = $hasil');
+          break;
       }
     } catch (e) {
       print('Terjadi kesalahan: ${e.toString()}');
