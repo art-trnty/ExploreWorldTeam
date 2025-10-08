@@ -28,6 +28,10 @@ void main() {
           hasil = kalkulator.kurang(angka1, angka2);
           print('Hasil: $angka1 - $angka2 = $hasil');
           break;
+        case 3:
+          hasil = kalkulator.kali(angka1, angka2);
+          print('Hasil: $angka1 × $angka2 = $hasil');
+          break;
       }
     } catch (e) {
       print('Terjadi kesalahan: ${e.toString()}');
