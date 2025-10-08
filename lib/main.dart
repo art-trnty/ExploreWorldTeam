@@ -1,122 +1,80 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+import 'kalkulator.dart';
 
 void main() {
-  runApp(const MyApp());
-}
+  final kalkulator = Kalkulator();
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  print('=== Aplikasi Kalkulator Sederhana ===');
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+  while (true) {
+    double angka1 = _mintaAngka('Masukkan angka pertama: ');
+    double angka2 = _mintaAngka('Masukkan angka kedua: ');
+
+    int? pilihan = _menuOperasi();
+
+    if (pilihan == null || pilihan < 1 || pilihan > 4) {
+      print('Pilihan tidak valid. Silakan coba lagi.');
+      continue;
+    }
+
+    try {
+      double hasil;
+      switch (pilihan) {
+        case 1:
+          hasil = kalkulator.tambah(angka1, angka2);
+          print('Hasil: $angka1 + $angka2 = $hasil');
+          break;
+        case 2:
+          hasil = kalkulator.kurang(angka1, angka2);
+          print('Hasil: $angka1 - $angka2 = $hasil');
+          break;
+      }
+    } catch (e) {
+      print('Terjadi kesalahan: ${e.toString()}');
+    }
+
+    // 🔁 Tanya apakah ingin lanjut
+    stdout.write('\nApakah Anda ingin menghitung lagi? (Y/T): ');
+    String? ulang = stdin.readLineSync();
+
+    if (ulang == null || ulang.trim().toUpperCase() != 'Y') {
+      print('Terima kasih telah menggunakan kalkulator.');
+      break;
+    }
+
+    print(''); // untuk spasi baris baru
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+/// Fungsi untuk meminta input angka dengan validasi
+double _mintaAngka(String pesan) {
+  while (true) {
+    stdout.write(pesan);
+    String? input = stdin.readLineSync();
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+    if (input == null) {
+      print('Input tidak boleh kosong.');
+      continue;
+    }
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+    double? angka = double.tryParse(input.replaceAll(',', '.')); // handle koma
+    if (angka == null) {
+      print('Input tidak valid. Harap masukkan angka yang benar.');
+    } else {
+      return angka;
+    }
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+/// Menampilkan menu operasi dan mengembalikan pilihan
+int? _menuOperasi() {
+  print('\nPilih operasi yang ingin dilakukan:');
+  print('[1] Tambah');
+  print('[2] Kurang');
+  print('[3] Kali');
+  print('[4] Bagi');
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
+  stdout.write('Masukkan pilihan Anda (1-4): ');
+  String? pilihan = stdin.readLineSync();
+  return int.tryParse(pilihan ?? '');
 }
